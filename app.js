@@ -6,6 +6,7 @@ var logger = require('morgan');
 var mongoose = require('mongoose');
 var cors = require('cors');
 var bodyParser = require('body-parser');
+var bcrypt = require('bcrypt');
 
 var accountRouter = require('./routes/account');
 var employeeRouter = require('./routes/employee');
@@ -13,13 +14,38 @@ var employeeRouter = require('./routes/employee');
 // Config for dotenv
 require('dotenv').config();
 
+const Account = require('./models/account');
+
 var app = express();
 
 // Config for mongoose
 mongoose.set('strictQuery', true);
 mongoose.connect(process.env.MONGODB_URI)
-.then(() => console.log('Connected to MongoDB'))
+.then(() => {
+    console.log('Connected to MongoDB');
+    createAdminAccount();
+})
 .catch(err => console.log('Failed to connect to MongoDB', err));
+
+function createAdminAccount() {
+  Account.findOne({ role: 'admin' })
+    .then((admin) => {
+      if (!admin) {
+        const adminAccount = new Account({
+          phoneNumber: process.env.ADMIN_PHONENUMBER,
+          email: process.env.ADMIN_EMAIL,
+          password: process.env.ADMIN_PASSWORD,
+          role: 'admin'
+        });
+        adminAccount.save()
+          .then(() => console.log('Admin account created successfully.'))
+          .catch(err => console.log('Error creating admin account:', err));
+      } else {
+        console.log('Admin account already exists.');
+      }
+    })
+    .catch(err => console.log('Error checking for admin account:', err));
+}
 
 // Config for cors
 app.use(cors());

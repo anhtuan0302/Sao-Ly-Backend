@@ -19,24 +19,6 @@ const AccountSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    fullName: {
-        type: String,
-        required: true,
-        trim: true
-    },
-    dob: {
-        type: Date,
-        required: true
-    },
-    address: {
-        type: String,
-        required: true,
-        trim: true
-    },
-    image: {
-        data: Buffer,
-        type: String
-    },
     role: {
         type: String,
         required: true,

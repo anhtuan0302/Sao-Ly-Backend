@@ -2,14 +2,38 @@ const mongoose = require('mongoose');
 
 const TimeKeepingSchema = require('./timekeeping');
 const SalarySchema = require('./salary');
-const BankSchema = require('./bank');
 
 const EmployeeSchema = new mongoose.Schema({
-    accountID: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'accounts',
+    phoneNumber: {
+        type: String,
         required: true,
-        unique: true
+        unique: true,
+        trim: true
+    },
+    email: {
+        type: String,
+        required: true,
+        unique: true,
+        lowercase: true,
+        trim: true
+    },
+    fullName: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    dob: {
+        type: Date,
+        required: true
+    },
+    address: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    image: {
+        data: Buffer,
+        type: String
     },
     departmentID: {
         type: mongoose.Schema.Types.ObjectId,
@@ -29,9 +53,15 @@ const EmployeeSchema = new mongoose.Schema({
         type: Date,
         required: false
     },
-    banks: {
-        type: [BankSchema],
-        required: true
+    accountNumber: {
+        type: Number,
+        required: false,
+        unique: true,
+    },
+    bankName: {
+        type: String,
+        required: false,
+        trim: true
     },
     wage: {
         type: Number,
