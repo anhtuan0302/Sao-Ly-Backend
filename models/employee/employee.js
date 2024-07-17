@@ -50,17 +50,14 @@ const EmployeeSchema = new mongoose.Schema({
         required: true
     },
     endDate: {
-        type: Date,
-        required: false
+        type: Date
     },
     accountNumber: {
         type: Number,
-        required: false,
         unique: true,
     },
     bankName: {
         type: String,
-        required: false,
         trim: true
     },
     wage: {
@@ -77,8 +74,11 @@ const EmployeeSchema = new mongoose.Schema({
     },
     timekeeping: {
         type: [TimeKeepingSchema],
-        required: true
+        required: true,
+        default: []
     },
+}, {
+    timestamps: true
 });
 
 const EmployeeModel = mongoose.model('employees', EmployeeSchema, 'employees');

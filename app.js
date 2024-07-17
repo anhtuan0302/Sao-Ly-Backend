@@ -14,7 +14,7 @@ var employeeRouter = require('./routes/employee');
 // Config for dotenv
 require('dotenv').config();
 
-const Account = require('./models/account');
+const Account = require('./models/account/account');
 
 var app = express();
 
@@ -79,7 +79,7 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-app.listen(process.env.PORT, () => {
+app.listen(process.env.PORT, '0.0.0.0', () => {
   console.log(`Server is running on port ${process.env.PORT}`);
 });
 

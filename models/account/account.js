@@ -1,6 +1,9 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
+const DeviceSchema = require('./device');
+const SessionSchema = require('./session');
+
 const AccountSchema = new mongoose.Schema({
     phoneNumber: {
         type: String,
@@ -10,7 +13,7 @@ const AccountSchema = new mongoose.Schema({
     },
     email: {
         type: String,
-        required: true,
+        required: false,
         unique: true,
         lowercase: true,
         trim: true
@@ -22,8 +25,18 @@ const AccountSchema = new mongoose.Schema({
     role: {
         type: String,
         required: true,
-        enum: ['admin', 'user', 'employee', 'director'],
-        default: 'user'
+        enum: ['admin', 'customer', 'employee', 'director', 'student', 'teacher'],
+        default: 'customer'
+    },
+    devices: {
+        type: [DeviceSchema],
+        required: true,
+        default: []
+    },
+    sessions: {
+        type: [SessionSchema],
+        required: true,
+        default: []
     },
     refreshToken: {
         type: String
@@ -45,6 +58,24 @@ AccountSchema.methods.comparePassword = function(candidatePassword) {
 AccountSchema.methods.removeRefreshToken = function() {
     this.refreshToken = null;
     return this.save();
+};
+
+AccountSchema.methods.isOnline = function() {
+    const openSession = this.sessions.find(session => !session.endTime);
+    return !!openSession;
+};
+
+AccountSchema.methods.minutesOffline = function() {
+    if (this.isOnline()) {
+        return 0;
+    }
+    const lastSession = this.sessions.filter(session => session.endTime).pop();
+    if (lastSession) {
+        const now = new Date();
+        const lastOfflineTime = new Date(lastSession.endTime).getTime();
+        return Math.floor((now.getTime() - lastOfflineTime) / 60000);
+    }
+    return null;
 };
 
 const AccountsModel = mongoose.model('accounts', AccountSchema, 'accounts');
