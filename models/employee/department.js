@@ -9,6 +9,11 @@ const DepartmentSchema = new mongoose.Schema({
     description: {
         type: String,
         required: false
+    },
+    managers: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'employees',
+        required: false
     }
 });
 

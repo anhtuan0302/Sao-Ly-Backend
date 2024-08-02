@@ -6,15 +6,18 @@ var logger = require('morgan');
 var mongoose = require('mongoose');
 var cors = require('cors');
 var bodyParser = require('body-parser');
-var bcrypt = require('bcrypt');
 
 var accountRouter = require('./routes/account');
 var employeeRouter = require('./routes/employee');
 
+var webhookFacebookRouter = require('./routes/chatFacebook/webhook');
+var chatbotFacebookRouter = require('./routes/chatFacebook/chatbot');
+var tiktokRouter = require('./routes/livestream/tiktok');
+
 // Config for dotenv
 require('dotenv').config();
 
-const Account = require('./models/account/account');
+const AccountModel = require('./models/account/account');
 
 var app = express();
 
@@ -28,7 +31,7 @@ mongoose.connect(process.env.MONGODB_URI)
 .catch(err => console.log('Failed to connect to MongoDB', err));
 
 function createAdminAccount() {
-  Account.findOne({ role: 'admin' })
+  AccountModel.findOne({ role: 'admin' })
     .then((admin) => {
       if (!admin) {
         const adminAccount = new Account({
@@ -60,8 +63,13 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/api/account', accountRouter);
-app.use('/api/employee', employeeRouter);
+app.use('/account', accountRouter);
+app.use('/employee', employeeRouter);
+
+// Router for Facebook Chatbot
+app.use('/webhook', webhookFacebookRouter);
+app.use('/chatbot', chatbotFacebookRouter);
+app.use('/tiktok', tiktokRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

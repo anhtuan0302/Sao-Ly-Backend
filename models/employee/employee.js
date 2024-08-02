@@ -24,53 +24,58 @@ const EmployeeSchema = new mongoose.Schema({
     },
     dob: {
         type: Date,
-        required: true
+        required: false
     },
     address: {
         type: String,
-        required: true,
+        required: false,
         trim: true
     },
     image: {
         data: Buffer,
-        type: String
+        type: String,
+        required: false
     },
     departmentID: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'departments',
-        required: true
+        required: false
     },
     type: {
         type: String,
         required: true,
-        enum: ['fulltime', 'parttime', 'internship']
+        enum: ['Fulltime', 'Parttime', 'Internship']
     },
     startDate: {
         type: Date,
-        required: true
+        required: false
     },
     endDate: {
-        type: Date
+        type: Date,
+        required: false
     },
     accountNumber: {
         type: Number,
         unique: true,
+        required: false
     },
     bankName: {
         type: String,
-        trim: true
+        trim: true,
+        required: false
     },
     wage: {
         type: Number,
-        required: true
+        required: false
     },
     allowance: {
         type: Number,
-        required: true
+        required: false
     },
     salaries: {
         type: [SalarySchema],
-        required: true
+        required: true,
+        default: []
     },
     timekeeping: {
         type: [TimeKeepingSchema],
